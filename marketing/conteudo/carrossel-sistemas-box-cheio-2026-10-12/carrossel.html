@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Carrossel Nali Scale | Sistemas para negócios (Box Cheio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --card: #111111;
+    --paper: #F3F2EE;
+    --ink: #0B0B0B;
+    --gold: #C9A45C;
+    --gold-dark: #8C6D2E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #777;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 84px 96px 80px;
+    margin-bottom: 6px;
+  }
+
+  .dark  { background: var(--black); color: #FFFFFF; }
+  .light { background: var(--paper); color: var(--ink); }
+
+  /* Topo: marca + contador */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .mark { height: 30px; width: auto; display: block; }
+  .count {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    opacity: 0.4;
+  }
+
+  /* Miolo */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Rodapé: @ + seta */
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    position: relative;
+    z-index: 2;
+  }
+  .dark .bottom  { border-top: 1px solid rgba(255,255,255,0.12); }
+  .light .bottom { border-top: 1px solid rgba(0,0,0,0.10); }
+  .handle {
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+  }
+  .next {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+  }
+  .next svg { width: 26px; height: 26px; }
+
+  .eyebrow {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 26px;
+  }
+  .light .eyebrow { color: var(--gold-dark); }
+
+  .rule {
+    width: 72px;
+    height: 3px;
+    background: var(--gold);
+    margin-bottom: 48px;
+  }
+  .light .rule { background: var(--gold-dark); }
+
+  .serif { font-family: 'Gilda Display', serif; font-weight: 400; }
+
+  .watermark {
+    position: absolute;
+    left: -10px;
+    bottom: 200px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 124px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+    color: rgba(255,255,255,0.06);
+    z-index: 1;
+  }
+
+  h1, h2, p, blockquote, .sub, .t, .txt, .close { text-wrap: balance; }
+
+  /* ---------- 01 CAPA ---------- */
+  .s1 h1 {
+    font-size: 104px;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+  }
+  .s1 h1 .hl {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    padding: 0 22px 0 18px;
+    margin-left: -18px;
+    margin-top: 14px;
+  }
+  .s1 .sub {
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.75);
+    border-left: 3px solid rgba(255,255,255,0.25);
+    padding-left: 28px;
+  }
+  .s1 .sub strong { color: #FFFFFF; font-weight: 600; }
+
+  /* ---------- 02 CICLO ---------- */
+  .s2 h2 {
+    font-size: 84px;
+    line-height: 1.06;
+    margin-bottom: 36px;
+  }
+  .s2 p {
+    font-size: 31px;
+    line-height: 1.55;
+    font-weight: 400;
+    color: #3A3A3A;
+    max-width: 820px;
+    margin-bottom: 64px;
+  }
+  .s2 p strong { color: var(--ink); font-weight: 600; }
+  .loop {
+    display: grid;
+    grid-template-columns: 1fr 84px 1fr;
+    grid-template-rows: auto 76px auto;
+    align-items: center;
+  }
+  .loop .box {
+    border: 1.5px solid var(--ink);
+    padding: 26px 28px;
+    font-size: 27px;
+    font-weight: 500;
+    line-height: 1.3;
+    min-height: 136px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .loop .box small {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: var(--gold-dark);
+    margin-bottom: 8px;
+  }
+  .loop .box.hot { background: var(--ink); color: #FFFFFF; }
+  .loop .box.hot small { color: var(--gold); }
+  .loop .arr { display: flex; align-items: center; justify-content: center; }
+  .loop .arr svg { width: 40px; height: 40px; }
+
+  /* ---------- 03 PROBLEMA ---------- */
+  .s3 h2 {
+    font-size: 62px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 840px;
+    margin-bottom: 30px;
+  }
+  .s3 .big {
+    font-size: 150px;
+    line-height: 1.0;
+    color: var(--gold);
+    margin-bottom: 64px;
+  }
+  .s3 p {
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.72);
+    max-width: 760px;
+  }
+  .s3 p strong { color: #FFFFFF; font-weight: 600; }
+
+  /* ---------- 04 O QUE É SISTEMA ---------- */
+  .s4 h2 {
+    font-size: 72px;
+    line-height: 1.08;
+    margin-bottom: 64px;
+  }
+  .pillars { border-top: 1px solid rgba(0,0,0,0.16); }
+  .pillar {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    align-items: center;
+    padding: 36px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.16);
+  }
+  .pillar .n {
+    font-family: 'Gilda Display', serif;
+    font-size: 70px;
+    line-height: 1;
+    color: var(--gold-dark);
+  }
+  .pillar .k {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    margin-bottom: 6px;
+  }
+  .pillar .t {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: #3A3A3A;
+  }
+
+  /* ---------- 05 BOX CHEIO ---------- */
+  .s5 .brand {
+    font-size: 128px;
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .s5 .tag {
+    font-size: 34px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 56px;
+  }
+  .s5 .tag strong { color: #FFFFFF; font-weight: 600; }
+  .chat {
+    background: var(--card);
+    border: 1px solid #262626;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .chat-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 28px;
+    border-bottom: 1px solid #262626;
+  }
+  .chat-head .av {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .chat-head .nm { font-size: 24px; font-weight: 600; }
+  .chat-head .st { font-size: 18px; color: rgba(255,255,255,0.45); }
+  .chat-body { padding: 30px 28px 34px; display: flex; flex-direction: column; gap: 18px; }
+  .bubble {
+    max-width: 82%;
+    padding: 20px 24px 14px;
+    border-radius: 16px;
+    font-size: 25px;
+    line-height: 1.45;
+  }
+  .bubble .time {
+    display: block;
+    text-align: right;
+    font-size: 15px;
+    margin-top: 6px;
+    opacity: 0.5;
+  }
+  .bubble.in { background: #1F1F1F; color: #F2F2F2; border-top-left-radius: 4px; align-self: flex-start; }
+  .bubble.out { background: #FFFFFF; color: var(--ink); border-top-right-radius: 4px; align-self: flex-end; }
+  .s5 .note {
+    margin-top: 26px;
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.5);
+  }
+  .s5 .note b { color: var(--gold); font-weight: 600; }
+
+  /* ---------- 06 COMO FUNCIONA ---------- */
+  .s6 h2 {
+    font-size: 70px;
+    line-height: 1.08;
+    margin-bottom: 52px;
+  }
+  .steps { border-top: 1px solid rgba(0,0,0,0.16); }
+  .step {
+    display: grid;
+    grid-template-columns: 76px 1fr 150px;
+    align-items: center;
+    gap: 26px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.16);
+  }
+  .step .num {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .step .txt { font-size: 29px; line-height: 1.35; font-weight: 400; }
+  .step .txt strong { font-weight: 600; }
+  .step .pill {
+    justify-self: end;
+    width: 132px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gold-dark);
+    color: var(--gold-dark);
+  }
+  .step.last .num { background: var(--ink); color: #FFFFFF; }
+  .step.last .pill { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+
+  /* ---------- 07 NÚMERO ---------- */
+  .s7 .pre {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 4px;
+  }
+  .s7 .num {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    line-height: 0.92;
+    margin-bottom: 44px;
+  }
+  .s7 .num .cur { font-size: 84px; font-weight: 500; color: var(--gold); padding-top: 22px; }
+  .s7 .num .val { font-size: 196px; font-weight: 700; letter-spacing: -0.03em; }
+  .s7 p {
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.75);
+    max-width: 888px;
+    margin-bottom: 72px;
+  }
+  .s7 p strong { color: #FFFFFF; font-weight: 600; }
+  .s7 blockquote {
+    font-family: 'Gilda Display', serif;
+    font-size: 50px;
+    line-height: 1.2;
+    padding-left: 32px;
+    border-left: 3px solid var(--gold);
+    max-width: 840px;
+  }
+
+  /* ---------- 08 OUTROS NEGÓCIOS ---------- */
+  .s8 h2 {
+    font-size: 66px;
+    line-height: 1.08;
+    margin-bottom: 48px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 52px;
+  }
+  .biz {
+    border: 1.5px solid rgba(0,0,0,0.22);
+    padding: 26px 26px 24px;
+    background: #FAF9F6;
+  }
+  .biz .k {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 10px;
+  }
+  .biz .t { font-size: 25px; line-height: 1.35; font-weight: 400; }
+  .s8 .close {
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.35;
+    max-width: 860px;
+  }
+  .s8 .close .hl { background: var(--ink); color: #FFFFFF; padding: 2px 12px; white-space: nowrap; }
+
+  /* ---------- 09 CTA ---------- */
+  .s9 .main { align-items: center; text-align: center; }
+  .s9 .mark-big { height: 64px; width: auto; margin-bottom: 22px; }
+  .s9 .tagline {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 64px;
+  }
+  .s9 .divider { width: 1px; height: 70px; background: rgba(255,255,255,0.25); margin-bottom: 64px; }
+  .s9 h2 {
+    font-size: 96px;
+    line-height: 1.05;
+    margin-bottom: 40px;
+  }
+  .s9 h2 span { color: var(--gold); }
+  .s9 p {
+    font-size: 34px;
+    font-weight: 300;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.78);
+    max-width: 760px;
+    margin-bottom: 56px;
+  }
+  .s9 .cta {
+    border: 1.5px solid #FFFFFF;
+    padding: 30px 64px 34px;
+  }
+  .s9 .cta small {
+    display: block;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 6px;
+  }
+  .s9 .cta b {
+    display: block;
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+  .s9 .after {
+    margin-top: 26px;
+    font-size: 24px;
+    color: rgba(255,255,255,0.55);
+  }
+  .s9 .bottom { justify-content: center; }
+</style>
+</head>
+<body>
+
+<!-- Marca NALI (o "A" é o triângulo, sem a barra) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="nali" viewBox="0 0 132 30">
+      <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter">
+        <path d="M2 28 V2 L24 28 V2"/>
+        <path d="M44 28 L56 2 L68 28"/>
+        <path d="M88 2 V28 H106"/>
+        <path d="M128 2 V28"/>
+      </g>
+    </symbol>
+    <symbol id="arrow" viewBox="0 0 24 24">
+      <path d="M4 12 H19 M13 6 L19 12 L13 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- 01 CAPA -->
+<section class="slide dark s1">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">01 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Sistemas para negócios</div>
+    <div class="rule"></div>
+    <h1>Seu cliente<br>comprou<br>uma vez.<br><span class="hl">E sumiu.</span></h1>
+    <div class="sub">Não é falta de cliente.<br><strong>É falta de sistema.</strong></div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 02 O CICLO -->
+<section class="slide light s2">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">02 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">O ciclo que custa caro</div>
+    <h2 class="serif">Você paga duas vezes pelo mesmo cliente.</h2>
+    <p>Anúncio, panfleto e desconto pra trazer ele na primeira vez. Ele sai satisfeito e, meses depois, esquece de você. <strong>E lá vai você pagar de novo pra trazer outro.</strong></p>
+    <div class="loop">
+      <div class="box"><small>01</small>Paga pra atrair</div>
+      <div class="arr"><svg><use href="#arrow"/></svg></div>
+      <div class="box"><small>02</small>Atende bem</div>
+
+      <div class="arr" style="transform:rotate(-90deg)"><svg><use href="#arrow"/></svg></div>
+      <div></div>
+      <div class="arr" style="transform:rotate(90deg)"><svg><use href="#arrow"/></svg></div>
+
+      <div class="box hot"><small>04</small>Paga de novo</div>
+      <div class="arr" style="transform:rotate(180deg)"><svg><use href="#arrow"/></svg></div>
+      <div class="box"><small>03</small>Cliente esquece</div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 03 O PROBLEMA -->
+<section class="slide dark s3">
+  <div class="watermark">O problema</div>
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">03 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">O problema de verdade</div>
+    <div class="rule"></div>
+    <h2>Seu cliente não foi embora porque não gostou.</h2>
+    <div class="big serif">Ele só esqueceu.</div>
+    <p>E quem lembrou dele primeiro<br><strong>foi o concorrente.</strong></p>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 04 O QUE É UM SISTEMA -->
+<section class="slide light s4">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">04 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">O que é um sistema</div>
+    <h2 class="serif">Não é mais um aplicativo. É um processo que roda sozinho.</h2>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="n">01</div>
+        <div><div class="k">GUARDA</div><div class="t">o dado certo de cada cliente.</div></div>
+      </div>
+      <div class="pillar">
+        <div class="n">02</div>
+        <div><div class="k">AGE</div><div class="t">na hora certa, sem depender de você lembrar.</div></div>
+      </div>
+      <div class="pillar">
+        <div class="n">03</div>
+        <div><div class="k">MOSTRA</div><div class="t">quanto dinheiro entrou por causa dele.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 05 BOX CHEIO -->
+<section class="slide dark s5">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">05 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Um sistema que a gente construiu</div>
+    <div class="brand">Box Cheio</div>
+    <div class="tag">Feito pra <strong>loja de troca de óleo.</strong></div>
+    <div class="chat">
+      <div class="chat-head">
+        <div class="av">SL</div>
+        <div>
+          <div class="nm">Sua Loja</div>
+          <div class="st">WhatsApp</div>
+        </div>
+      </div>
+      <div class="chat-body">
+        <div class="bubble in">Oi, Carlos! Tá chegando a hora da troca de óleo do seu Onix, placa ABC1D23. Quer deixar agendado pra essa semana?<span class="time">09:12</span></div>
+        <div class="bubble out">Opa, bora! Pode ser sábado de manhã?<span class="time">09:20</span></div>
+      </div>
+    </div>
+    <div class="note">Mensagem enviada <b>sozinha</b>, no dia certo.</div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 06 COMO FUNCIONA -->
+<section class="slide light s6">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">06 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Como o Box Cheio funciona</div>
+    <h2 class="serif">Conquista uma vez.<br>O cliente volta sempre.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="txt">Guarda <strong>cada placa</strong> e cada troca feita.</div>
+        <div class="pill">GUARDA</div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="txt">Calcula quando vence <strong>a próxima troca.</strong></div>
+        <div class="pill">AGE</div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="txt">Chama no WhatsApp no dia certo, com <strong>nome, carro e placa.</strong></div>
+        <div class="pill">AGE</div>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <div class="txt">Não voltou? <strong>Ele lembra de novo.</strong></div>
+        <div class="pill">AGE</div>
+      </div>
+      <div class="step last">
+        <div class="num">5</div>
+        <div class="txt">No fim do mês, mostra <strong>quanto dinheiro voltou.</strong></div>
+        <div class="pill">MOSTRA</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 07 NÚMERO -->
+<section class="slide dark s7">
+  <div class="watermark">Vazamento</div>
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">07 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">O tamanho do vazamento</div>
+    <div class="rule"></div>
+    <div class="pre">MAIS DE</div>
+    <div class="num"><span class="cur">R$</span><span class="val">10 mil</span></div>
+    <p>indo embora numa loja de <strong style="white-space:nowrap">120 trocas por mês</strong>,<br>só com cliente que não volta.</p>
+    <blockquote>Cliente que não volta não reclama. Só troca o óleo no concorrente.</blockquote>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 08 OUTROS NEGÓCIOS -->
+<section class="slide light s8">
+  <div class="top">
+    <svg class="mark" viewBox="0 0 132 30" style="width:132px"><use href="#nali"/></svg>
+    <div class="count">08 / 09</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">E não é só troca de óleo</div>
+    <h2 class="serif">Todo negócio tem cliente<br>pra chamar de volta.</h2>
+    <div class="grid">
+      <div class="biz"><div class="k">Clínica</div><div class="t">Paciente que não voltou pra revisão.</div></div>
+      <div class="biz"><div class="k">Salão e barbearia</div><div class="t">Cliente que sumiu depois do corte.</div></div>
+      <div class="biz"><div class="k">Pet shop</div><div class="t">Banho e vacina com data certa.</div></div>
+      <div class="biz"><div class="k">Oficina</div><div class="t">Revisão que vence pela quilometragem.</div></div>
+      <div class="biz"><div class="k">Estética</div><div class="t">Pacote que ficou pela metade.</div></div>
+      <div class="biz"><div class="k">Academia</div><div class="t">Aluno que parou de vir e ninguém ligou.</div></div>
+    </div>
+    <div class="close">O cliente já te conhece.<br><span class="hl">Falta o sistema</span> que chama ele de volta.</div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+    <div class="next"><svg><use href="#arrow"/></svg></div>
+  </div>
+</section>
+
+<!-- 09 CTA -->
+<section class="slide dark s9">
+  <div class="top">
+    <span></span>
+    <div class="count">09 / 09</div>
+  </div>
+  <div class="main">
+    <svg class="mark-big" viewBox="0 0 132 30" style="width:282px"><use href="#nali"/></svg>
+    <div class="tagline">SYSTEMS BUILT TO SCALE</div>
+    <div class="divider"></div>
+    <h2 class="serif">Sistema escala.<br><span>Improviso não.</span></h2>
+    <p>Quer saber qual sistema tá faltando no seu negócio?</p>
+    <div class="cta">
+      <small>COMENTA</small>
+      <b>SISTEMA</b>
+    </div>
+    <div class="after">que a gente te chama no direct.</div>
+  </div>
+  <div class="bottom">
+    <div class="handle">@nali.scale</div>
+  </div>
+</section>
+
+</body>
+</html>
